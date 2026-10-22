@@ -111,7 +111,7 @@ const C=[
 {name:'タウンステージ',sky:0x7fa8d6,fog:0xaec4dc,R:100,A:[.18,.14],P:[1,2.6],hw:6,elev:1.6,amp:1.5,road:0x35373d,dust:0xcccccc,sun:0xffffff},
 {name:'住宅街ステージ',sky:0xf2cfa8,fog:0xe9cdb4,hw:3.6,elev:1.4,amp:1.2,road:0x3c3d42,dust:0xcfcfcf,sun:0xffe2bd},
 {name:'峠ステージ',sky:0xaebfd4,fog:0xc4cfdb,hw:4.2,elev:16,amp:30,road:0x45464c,dust:0xb0aa9a,sun:0xfff0d0}];
-const N=700,S=360,cs=3,G=Math.round(2*S/cs),W=G+1,LAPS=3,DEP=[60,60,22,10,70],GR=[16,10.5,17,15.5,15.5],SC=[1.55,1.55,1.5,1.4,1.5],JP=[[170,560],[120,330,560]];
+const N=700,S=360,cs=3,G=Math.round(2*S/cs),W=G+1,LAPS=3,DEP=[60,60,22,10,70],GR=[16,10.5,17,15.5,15.5],SC=[1.55,1.55,1.5,1.4,1.5],JP=[[170,560],[120,330,560]],OB=[[[5,30,105,40],[5,-10,105,0],[5,-50,105,-40]],[[55,-135,95,-125]],[[45,-120,100,-110]],[],[[-120,116,120,128],[-120,77,120,89],[-120,37,120,49],[-120,-3,120,9],[-120,-43,120,-31],[-120,-83,120,-71]]];
 const TR=[
 [[-110,125],[-20,135],[80,125],[135,95],[110,62],[40,55],[0,55],[-20,35],[0,15],[60,15],[110,15],[130,-5],[110,-25],[50,-25],[0,-25],[-20,-45],[0,-65],[60,-65],[110,-70],[140,-110],[100,-145],[20,-150],[-60,-140],[-120,-110],[-150,-50],[-155,20]],
 [[-140,80],[-80,130],[0,120],[60,90],[90,125],[150,100],[160,30],[150,-30],[105,-45],[50,-30],[10,-60],[45,-100],[100,-110],[125,-130],[95,-150],[30,-155],[-60,-145],[-120,-100],[-155,-30]],
@@ -355,10 +355,10 @@ function update(dt){
 let f=[Math.sin(s.h),Math.cos(s.h)];
 s.vx+=(s.ax||0)*dt;s.vz+=(s.az||0)*dt;let fw=s.vx*f[0]+s.vz*f[1],lx=s.vx-f[0]*fw,lz=s.vz-f[1]*fw;
 near(s.x,s.z);const on=ND<hw+.6,zn=zone(NF),sd0=zn?(NS>0?zn[0]:zn[1]):0;
-if(sd0==1&&!on&&hm(s.x,s.z)<NY-7){s.t+=5;toast('COURSE OUT +5s');reset();return}
+if(s.y<NY-7||OB[K].some(r=>{const X=s.x/SC[K],Z=s.z/SC[K];return X>r[0]&&X<r[2]&&Z>r[1]&&Z<r[3]})){s.t+=5;toast('COURSE OUT +5s');reset();return}
 if(sd0==2&&zn[2]>.5&&ND>hw+4.2){const ux=(s.x-NX)/ND,uz=(s.z-NZ)/ND;s.x=NX+ux*(hw+4.2);s.z=NZ+uz*(hw+4.2);const vn=s.vx*ux+s.vz*uz;if(vn>0){s.vx-=vn*ux*1.4;s.vz-=vn*uz*1.4}}
 
-if(on&&!s.air){if(Math.abs(NF-s.good)<14)s.good=NF;else{toast('SHORTCUT +5s');s.t+=5;reset();return}}else if(ND>hw+16&&!s.air){toast('COURSE OUT +5s');s.t+=5;reset();return}
+if(on&&!s.air)s.good=NF;
 const air0=s.air,oh=s.h,ovx=s.vx,ovz=s.vz;
 const ldf=Math.max(0,Math.min(1,s.ld));let acc=keys.up&&!air0?(on?24:17)*CS.a*ldf:0;
 if(keys.down){if(fw>.5)fw=Math.max(0,fw-42*dt);else acc-=13}
